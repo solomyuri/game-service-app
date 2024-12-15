@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.15.xsd">
+
+    <changeSet id="create-games-table" author="solomyuri">
+        <createTable tableName="games">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp with timezone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated_date" type="timestamp with timezone">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-users-table" author="solomyuri">
+        <createTable tableName="users">
+            <column name="username" type="VARCHAR(32)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="game_count" type="INT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="win_count" type="INT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lose_count" type="INT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="current_game_id" type="UUID">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_date" type="timestamp with timezone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated_date" type="timestamp with timezone">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add-users-game-foreign-key" author="solomyuri">
+        <addForeignKeyConstraint
+            baseTableName="users"
+            baseColumnNames="current_game_id"
+            referencedTableName="games"
+            referencedColumnNames="id"
+            onDelete="SET NULL"
+            constraintName="fk_users_games"/>
+    </changeSet>
+
+</databaseChangeLog>
