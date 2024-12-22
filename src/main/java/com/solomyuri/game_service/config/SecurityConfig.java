@@ -30,7 +30,7 @@ public class SecurityConfig {
 		http.oauth2ResourceServer(
 				oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
-		http.authorizeHttpRequests(auth -> auth.anyRequest().hasAuthority("games-service-user"));
+		http.authorizeHttpRequests(auth -> auth.anyRequest().hasAuthority("game-service-user"));
 
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.csrf(AbstractHttpConfigurer::disable);

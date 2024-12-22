@@ -11,24 +11,26 @@ import com.solomyuri.game_service.repository.UsersRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class UsersServiceImpl implements UsersService {
 
-	private final UserMapper userMapper;
-	private final TokenMapper tokenMapper;
-	private final UsersRepository usersRepository;
+    private final UserMapper userMapper;
+    private final TokenMapper tokenMapper;
+    private final UsersRepository usersRepository;
 
-	@Override
-	public UserDto getUserFromToken(JwtAuthenticationToken token) {
+    @Override
+    @Transactional()
+    public UserDto getUserFromToken(JwtAuthenticationToken token) {
 
-		String username = tokenMapper.jwtToModel(token).username();
-		User userEntity = usersRepository.findByUsername(username)
-				.orElse(usersRepository.save(new User(username, 0, 0, 0, null)));
+        String username = tokenMapper.jwtToModel(token).username();
+        User userEntity = usersRepository.findByUsername(username).orElseGet(() ->
+                usersRepository.save(new User(username, 0, 0, 0, null)));
 
-		return userMapper.userToDto(userEntity);
-	}
+        return userMapper.userToDto(userEntity);
+    }
 
 }
