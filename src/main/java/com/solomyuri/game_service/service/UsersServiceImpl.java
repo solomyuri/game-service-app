@@ -42,7 +42,7 @@ public class UsersServiceImpl implements UsersService {
     private HomeResponse getUser(String username) {
 
         User userEntity = usersRepository.findByUsername(username).orElseGet(() ->
-                usersRepository.save(new User(username, 0, 0, 0, null)));
+                usersRepository.save(User.builder().username(username).gameCount(0).winCount(0).loseCount(0).build()));
 
         return new HomeResponse(userMapper.userToDto(userEntity), null);
     }
@@ -50,7 +50,7 @@ public class UsersServiceImpl implements UsersService {
     private HomeResponse getUserForAdmin(String username, Pageable pageable) {
 
         User userEntity = usersRepository.findByUsername(username).orElseGet(() ->
-                usersRepository.save(new User(username, 0, 0, 0, null)));
+                usersRepository.save(User.builder().username(username).gameCount(0).winCount(0).loseCount(0).build()));
 
         Page<UserDto> pageUsers = usersRepository.findAll(pageable).map(userMapper::userToDto);
         return new HomeResponse(userMapper.userToDto(userEntity), pageMapper.pageToPageResponse(pageUsers));

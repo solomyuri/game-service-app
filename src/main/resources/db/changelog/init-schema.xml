@@ -10,30 +10,10 @@
             <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="created_date" type="timestamp with timezone">
+            <column name="owner" type="UUID">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_updated_date" type="timestamp with timezone">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="create-users-table" author="solomyuri">
-        <createTable tableName="users">
-            <column name="username" type="VARCHAR(32)">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="game_count" type="INT" defaultValue="0">
-                <constraints nullable="false"/>
-            </column>
-            <column name="win_count" type="INT" defaultValue="0">
-                <constraints nullable="false"/>
-            </column>
-            <column name="lose_count" type="INT" defaultValue="0">
-                <constraints nullable="false"/>
-            </column>
-            <column name="current_game_id" type="UUID">
+            <column name="current_shooter" type="UUID">
                 <constraints nullable="true"/>
             </column>
             <column name="created_date" type="timestamp with timezone">
@@ -45,14 +25,47 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="add-users-game-foreign-key" author="solomyuri">
+    <changeSet id="create-users-table" author="solomyuri">
+        <createTable tableName="users">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(32)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="game_count" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="win_count" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lose_count" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp with timezone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated_date" type="timestamp with timezone">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add-game-users-foreign-key" author="solomyuri">
         <addForeignKeyConstraint
-            baseTableName="users"
-            baseColumnNames="current_game_id"
-            referencedTableName="games"
-            referencedColumnNames="id"
-            onDelete="SET NULL"
-            constraintName="fk_users_games"/>
+                baseTableName="games"
+                baseColumnNames="owner"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                constraintName="fk_owner_games_users"/>
+        <addForeignKeyConstraint
+                baseTableName="games"
+                baseColumnNames="current_shooter"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                constraintName="fk_current_shooter_users_games"/>
     </changeSet>
 
 </databaseChangeLog>

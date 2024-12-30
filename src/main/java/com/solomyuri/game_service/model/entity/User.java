@@ -1,14 +1,11 @@
 package com.solomyuri.game_service.model.entity;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,21 +22,33 @@ import lombok.Setter;
 public class User extends BaseEntity {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
+	@Column(name = "id")
+	private UUID id;
+
 	@Column(name = "username")
 	private String username;
 
 	@Column(name = "game_count")
-	private Integer gameCount;
+	private Integer gameCount = 0;
 
 	@Column(name = "win_count")
-	private Integer winCount;
+	private Integer winCount = 0;
 
 	@Column(name = "lose_count")
-	private Integer loseCount;
+	private Integer loseCount = 0;
 
-	@OneToOne(cascade = CascadeType.MERGE)
-	@JoinColumn(name = "current_game_id", referencedColumnName = "id")
+	@OneToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "owner", fetch = FetchType.LAZY)
 	private Game currentGame;
+
+	@OneToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "user", fetch = FetchType.LAZY)
+	private Set<Cell> cells = new HashSet<>();
+
+	@OneToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "user", fetch = FetchType.LAZY)
+	private Set<Ship> ships = new HashSet<>();
+
+	@OneToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "user", fetch = FetchType.LAZY)
+	private Set<Shot> shots = new HashSet<>();
 
 	@Override
 	public boolean equals(Object o) {
