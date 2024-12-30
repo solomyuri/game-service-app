@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 
 import lombok.Getter;
 
-@SuppressWarnings("serial")
 @Getter
 public class ApplicationException extends RuntimeException {
 
