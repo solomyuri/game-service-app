@@ -31,6 +31,12 @@ public class Game extends BaseEntity {
 	@OneToMany(mappedBy = "game", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
 	private Set<Cell> cells = new HashSet<>();
 
+	@OneToMany(mappedBy = "game", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+	private Set<Ship> ships = new HashSet<>();
+
+	@OneToMany(mappedBy = "game", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+	private Set<Shot> shots = new HashSet<>();
+	
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)

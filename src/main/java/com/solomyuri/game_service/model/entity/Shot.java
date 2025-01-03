@@ -24,8 +24,12 @@ public class Shot extends BaseEntity {
     ShotResult result;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "game_id", nullable = false)
+    private Game game;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cell_id", nullable = false)

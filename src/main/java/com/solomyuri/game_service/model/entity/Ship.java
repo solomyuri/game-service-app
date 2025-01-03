@@ -29,6 +29,10 @@ public class Ship extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "game_id", nullable = false)
+    private Game game;
+
     @OneToMany(mappedBy = "ship", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     private Set<Cell> cells = new HashSet<>();
 
