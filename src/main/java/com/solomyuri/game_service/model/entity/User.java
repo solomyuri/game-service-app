@@ -30,24 +30,30 @@ public class User extends BaseEntity {
 	private String username;
 
 	@Column(name = "game_count")
+	@Builder.Default
 	private Integer gameCount = 0;
 
 	@Column(name = "win_count")
+	@Builder.Default
 	private Integer winCount = 0;
 
 	@Column(name = "lose_count")
+	@Builder.Default
 	private Integer loseCount = 0;
 
 	@OneToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "owner", fetch = FetchType.LAZY)
 	private Game currentGame;
 
 	@OneToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "user", fetch = FetchType.LAZY)
+	@Builder.Default
 	private Set<Cell> cells = new HashSet<>();
 
 	@OneToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "user", fetch = FetchType.LAZY)
+	@Builder.Default
 	private Set<Ship> ships = new HashSet<>();
 
 	@OneToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "user", fetch = FetchType.LAZY)
+	@Builder.Default
 	private Set<Shot> shots = new HashSet<>();
 
 	@Override
