@@ -10,7 +10,7 @@ import com.solomyuri.game_service.enums.Role;
 import com.solomyuri.game_service.mapper.PageMapper;
 import com.solomyuri.game_service.mapper.TokenMapper;
 import com.solomyuri.game_service.mapper.UserMapper;
-import com.solomyuri.game_service.model.TokenModel;
+import com.solomyuri.game_service.model.dto.TokenModel;
 import com.solomyuri.game_service.model.dto.UserDto;
 import com.solomyuri.game_service.model.dto.response.HomeResponse;
 import com.solomyuri.game_service.model.entity.User;

@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
-import com.solomyuri.game_service.model.TokenModel;
+import com.solomyuri.game_service.model.dto.TokenModel;
 
 @Mapper(componentModel = "spring")
 public interface TokenMapper {

@@ -1,8 +1,7 @@
 package com.solomyuri.game_service.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -10,6 +9,9 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "cells")
 public class Cell extends BaseEntity {
 
@@ -25,6 +27,7 @@ public class Cell extends BaseEntity {
     String y;
 
     @Column(name = "is_open", nullable = false)
+    @Builder.Default
     private Boolean isOpen = false;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,7 +1,7 @@
 package com.solomyuri.game_service.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.solomyuri.game_service.model.ErrorResponse;
+import com.solomyuri.game_service.model.dto.ErrorResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

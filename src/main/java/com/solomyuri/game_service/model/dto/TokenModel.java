@@ -1,4 +1,4 @@
-package com.solomyuri.game_service.model;
+package com.solomyuri.game_service.model.dto;
 
 import java.util.List;
 

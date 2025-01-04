@@ -1,6 +1,6 @@
 package com.solomyuri.game_service.exception;
 
-import com.solomyuri.game_service.model.ErrorResponse;
+import com.solomyuri.game_service.model.dto.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
