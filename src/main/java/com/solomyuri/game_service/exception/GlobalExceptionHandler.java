@@ -5,12 +5,15 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.InternalException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
@@ -33,6 +36,7 @@ public class GlobalExceptionHandler {
 				ValidationException.class, HttpStatus.BAD_REQUEST,
 				ConstraintViolationException.class, HttpStatus.BAD_REQUEST,
 				BindException.class, HttpStatus.BAD_REQUEST,
+				HttpMessageNotReadableException.class, HttpStatus.BAD_REQUEST,
 				PropertyReferenceException.class, HttpStatus.BAD_REQUEST,
 				WebClientRequestException.class, HttpStatus.BAD_GATEWAY,
 				NoResourceFoundException.class, HttpStatus.NOT_FOUND
@@ -44,16 +48,22 @@ public class GlobalExceptionHandler {
 		log.error("An error has occurred", exception);
 
 		HttpStatus httpStatus;
+		String message = null;
 
 		if (exception instanceof ResponseStatusException responseStatusException) {
 			httpStatus = HttpStatus.valueOf(responseStatusException.getStatusCode().value());
 		} else if (exception instanceof ApplicationException applicationException) {
 			httpStatus = applicationException.getStatus();
+		} else if (exception instanceof MethodArgumentNotValidException notValidException) {
+			httpStatus = HttpStatus.BAD_REQUEST;
+			message = notValidException.getBindingResult().getAllErrors().stream()
+					.map(DefaultMessageSourceResolvable::getDefaultMessage).findFirst().orElse("Bad request");
 		} else {
 			httpStatus = exceptionToStatus.getOrDefault(exception.getClass(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		String message = Objects.equals(httpStatus, HttpStatus.BAD_GATEWAY)
+		if (message == null)
+		 message = Objects.equals(httpStatus, HttpStatus.BAD_GATEWAY)
 				? "External system error"
 				: exception.getMessage();
 
