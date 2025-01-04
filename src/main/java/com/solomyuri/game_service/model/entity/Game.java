@@ -28,13 +28,13 @@ public class Game extends BaseEntity {
 	@JoinColumn(name = "owner", nullable = false)
 	private User owner;
 
-	@OneToMany(mappedBy = "game", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+	@OneToMany(mappedBy = "game", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
 	private Set<Cell> cells = new HashSet<>();
 
-	@OneToMany(mappedBy = "game", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+	@OneToMany(mappedBy = "game", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
 	private Set<Ship> ships = new HashSet<>();
 
-	@OneToMany(mappedBy = "game", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+	@OneToMany(mappedBy = "game", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
 	private Set<Shot> shots = new HashSet<>();
 	
 	@Override

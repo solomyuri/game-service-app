@@ -64,7 +64,7 @@
                 baseColumnNames="current_shooter"
                 referencedTableName="users"
                 referencedColumnNames="id"
-                onDelete="CASCADE"
+                onDelete="SET NULL"
                 constraintName="fk_current_shooter_users_games"/>
     </changeSet>
 

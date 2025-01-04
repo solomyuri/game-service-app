@@ -44,16 +44,16 @@ public class Cell extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Cell cell = (Cell) o;
-        return Objects.equals(id, cell.id);
+        return Objects.equals(x, cell.x) &&
+               Objects.equals(y, cell.y) &&
+               Objects.equals(user, cell.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(x, y, user);
     }
 }

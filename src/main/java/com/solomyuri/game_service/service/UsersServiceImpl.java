@@ -1,21 +1,23 @@
 package com.solomyuri.game_service.service;
 
-import com.solomyuri.game_service.enums.Role;
-import com.solomyuri.game_service.mapper.PageMapper;
-import com.solomyuri.game_service.mapper.TokenMapper;
-import com.solomyuri.game_service.mapper.UserMapper;
-import com.solomyuri.game_service.model.TokenModel;
-import com.solomyuri.game_service.model.dto.HomeResponse;
-import com.solomyuri.game_service.model.dto.UserDto;
-import com.solomyuri.game_service.model.entity.User;
-import com.solomyuri.game_service.repository.UsersRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.solomyuri.game_service.enums.Role;
+import com.solomyuri.game_service.mapper.PageMapper;
+import com.solomyuri.game_service.mapper.TokenMapper;
+import com.solomyuri.game_service.mapper.UserMapper;
+import com.solomyuri.game_service.model.TokenModel;
+import com.solomyuri.game_service.model.dto.UserDto;
+import com.solomyuri.game_service.model.dto.response.HomeResponse;
+import com.solomyuri.game_service.model.entity.User;
+import com.solomyuri.game_service.repository.UsersRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j

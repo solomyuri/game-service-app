@@ -41,18 +41,18 @@ public class User extends BaseEntity {
 	@Builder.Default
 	private Integer loseCount = 0;
 
-	@OneToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "owner", fetch = FetchType.LAZY)
+	@OneToOne(cascade = {CascadeType.MERGE}, mappedBy = "owner", fetch = FetchType.LAZY)
 	private Game currentGame;
 
-	@OneToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "user", fetch = FetchType.LAZY)
+	@OneToMany(cascade = {CascadeType.MERGE}, mappedBy = "user", fetch = FetchType.LAZY)
 	@Builder.Default
 	private Set<Cell> cells = new HashSet<>();
 
-	@OneToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "user", fetch = FetchType.LAZY)
+	@OneToMany(cascade = {CascadeType.MERGE}, mappedBy = "user", fetch = FetchType.LAZY)
 	@Builder.Default
 	private Set<Ship> ships = new HashSet<>();
 
-	@OneToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "user", fetch = FetchType.LAZY)
+	@OneToMany(cascade = {CascadeType.MERGE}, mappedBy = "user", fetch = FetchType.LAZY)
 	@Builder.Default
 	private Set<Shot> shots = new HashSet<>();
 
