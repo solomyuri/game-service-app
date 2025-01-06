@@ -2,8 +2,7 @@ package com.solomyuri.game_service.model.entity;
 
 import com.solomyuri.game_service.enums.ShipType;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -13,6 +12,9 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "ships")
 public class Ship extends BaseEntity {
 
@@ -37,6 +39,7 @@ public class Ship extends BaseEntity {
     private Game game;
 
     @OneToMany(mappedBy = "ship", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
+    @Builder.Default
     private Set<Cell> cells = new HashSet<>();
 
 	@Override

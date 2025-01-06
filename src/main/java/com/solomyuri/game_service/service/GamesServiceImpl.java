@@ -1,26 +1,27 @@
 package com.solomyuri.game_service.service;
 
-import java.util.*;
-
+import com.solomyuri.game_service.exception.ApplicationException;
+import com.solomyuri.game_service.mapper.GameMapper;
+import com.solomyuri.game_service.model.dto.request.CreateGameRequest;
+import com.solomyuri.game_service.model.dto.response.CreateGameResponse;
 import com.solomyuri.game_service.model.entity.Cell;
+import com.solomyuri.game_service.model.entity.Game;
+import com.solomyuri.game_service.model.entity.User;
 import com.solomyuri.game_service.repository.CellsRepository;
+import com.solomyuri.game_service.repository.GamesRepository;
 import com.solomyuri.game_service.repository.ShipsRepository;
+import com.solomyuri.game_service.repository.UsersRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.solomyuri.game_service.exception.ApplicationException;
-import com.solomyuri.game_service.mapper.GameMapper;
-import com.solomyuri.game_service.model.dto.request.CreateGameRequest;
-import com.solomyuri.game_service.model.dto.response.CreateGameResponse;
-import com.solomyuri.game_service.model.entity.Game;
-import com.solomyuri.game_service.model.entity.User;
-import com.solomyuri.game_service.repository.GamesRepository;
-import com.solomyuri.game_service.repository.UsersRepository;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 
 @Service
 @Slf4j
@@ -31,17 +32,13 @@ public class GamesServiceImpl implements GamesService {
 	private final GamesRepository gamesRepository;
 	private final CellsRepository cellsRepository;
 	private final ShipsRepository shipsRepository;
+	private final ShipsGenerator shipsGenerator;
 	private final GameMapper gameMapper;
 
 	@Override
 	@Transactional
 	public CreateGameResponse createGame(CreateGameRequest request, JwtAuthenticationToken token) {
-		String username = (String) token.getToken().getClaims().get("preferred_username");
-
-		User user = usersRepository.findByUsername(username).orElseThrow(() -> {
-			log.warn("User with username {} not found", username);
-			return new ApplicationException("User not found", HttpStatus.NOT_FOUND);
-		});
+		User user = getUserFromToken(token);
 
 		if (Objects.nonNull(user.getCurrentGame()))
 			gamesRepository.deleteById(user.getCurrentGame().getId());
@@ -49,28 +46,45 @@ public class GamesServiceImpl implements GamesService {
 		Game userGame = gameMapper.dtoToEntity(request.getGame());
 		user.setCurrentGame(userGame);
 		userGame.setOwner(user);
+		userGame.setCurrentShooter(new Random().nextBoolean() ? user : null);
 	    gamesRepository.saveAndFlush(userGame);
 		Map<String, Cell> cellsMap = new HashMap<>();
+		setShipsAndCells(userGame, cellsMap);
+		fillCellsMap(cellsMap, user, userGame);
+		Map<String, Cell> machineCellsMap = new HashMap<>();
+		fillCellsMap(machineCellsMap, null, userGame);
+		shipsRepository.saveAll(shipsGenerator.generateShipsSet(machineCellsMap, userGame));
+		cellsRepository.saveAll(cellsMap.values());
+		cellsRepository.saveAll(machineCellsMap.values());
+		return new CreateGameResponse(userGame.getId());
+	}
 
-		userGame.getShips().forEach(ship -> {
-			ship.setGame(userGame);
+	private User getUserFromToken(JwtAuthenticationToken token) {
+		String username = (String) token.getToken().getClaims().get("preferred_username");
+		return usersRepository.findByUsername(username).orElseThrow(() -> {
+			log.warn("User with username {} not found", username);
+			return new ApplicationException("User not found", HttpStatus.NOT_FOUND);
+		});
+	}
+
+	private void setShipsAndCells(Game game, Map<String, Cell> cellsMap) {
+		User user = game.getOwner();
+
+		game.getShips().forEach(ship -> {
+			ship.setGame(game);
 			ship.setUser(user);
 			ship.getCells().forEach(cell -> {
 				cell.setShip(ship);
-				cell.setGame(userGame);
+				cell.setGame(game);
 				cell.setUser(user);
 				cellsMap.put(cell.getX() + cell.getY(), cell);
 			});
 		});
 
-		cellsMapFilling(cellsMap, user, userGame);
-		shipsRepository.saveAll(userGame.getShips());
-		cellsRepository.saveAll(cellsMap.values());
-
-		return new CreateGameResponse(userGame.getId());
+		shipsRepository.saveAll(game.getShips());
 	}
 	
-	private void cellsMapFilling(Map<String, Cell> cells, User user, Game game) {
+	private void fillCellsMap(Map<String, Cell> cells, User user, Game game) {
 		cells.computeIfAbsent("A1", k -> Cell.builder().x("A").y("1").user(user).game(game).build());
 		cells.computeIfAbsent("A2", k -> Cell.builder().x("A").y("2").user(user).game(game).build());
 		cells.computeIfAbsent("A3", k -> Cell.builder().x("A").y("3").user(user).game(game).build());
