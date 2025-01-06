@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.15.xsd">
+
+	<changeSet id="create-cells-table" author="solomyuri">
+		<createTable tableName="cells">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true"/>
+			</column>
+			<column name="x_coordinate" type="VARCHAR(1)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="y_coordinate" type="VARCHAR(2)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="is_open" type="BOOLEAN">
+				<constraints nullable="false"/>
+			</column>
+			<column name="user_id" type="UUID">
+				<constraints nullable="true"/>
+			</column>
+			<column name="game_id" type="UUID">
+				<constraints nullable="false"/>
+			</column>
+			<column name="ship_id" type="UUID">
+				<constraints nullable="true"/>
+			</column>
+            <column name="created_date" type="timestamp with timezone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated_date" type="timestamp with timezone">
+                <constraints nullable="false"/>
+            </column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="create-ships-table" author="solomyuri">
+		<createTable tableName="ships">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true"/>
+			</column>
+			<column name="type" type="VARCHAR(20)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="number" type="INT">
+				<constraints nullable="false"/>
+			</column>
+			<column name="user_id" type="UUID">
+				<constraints nullable="true"/>
+			</column>
+			<column name="game_id" type="UUID">
+				<constraints nullable="false"/>
+			</column>
+            <column name="created_date" type="timestamp with timezone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated_date" type="timestamp with timezone">
+                <constraints nullable="false"/>
+            </column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="create-shots-table" author="solomyuri">
+		<createTable tableName="shots">
+			<column name="id" type="UUID">
+				<constraints primaryKey="true"/>
+			</column>
+			<column name="result" type="VARCHAR(20)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="user_id" type="UUID">
+				<constraints nullable="false"/>
+			</column>
+			<column name="cell_id" type="UUID">
+				<constraints nullable="false"/>
+			</column>
+			<column name="game_id" type="UUID">
+				<constraints nullable="false"/>
+			</column>
+            <column name="created_date" type="timestamp with timezone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated_date" type="timestamp with timezone">
+                <constraints nullable="false"/>
+            </column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="add-foreign-keys" author="solomyuri">
+		<addForeignKeyConstraint 
+			baseTableName="cells"
+			baseColumnNames="user_id" 
+			referencedTableName="users"
+			referencedColumnNames="id" 
+			onDelete="SET NULL"
+			constraintName="fk_cells_users"/>
+		<addForeignKeyConstraint 
+			baseTableName="cells"
+			baseColumnNames="game_id" 
+			referencedTableName="games"
+			referencedColumnNames="id" 
+			onDelete="CASCADE"
+			constraintName="fk_cells_games"/>
+		<addForeignKeyConstraint 
+			baseTableName="cells"
+			baseColumnNames="ship_id" 
+			referencedTableName="ships"
+			referencedColumnNames="id" 
+			onDelete="SET NULL"
+			constraintName="fk_cells_ships"/>
+		<addForeignKeyConstraint 
+			baseTableName="ships"
+			baseColumnNames="game_id" 
+			referencedTableName="games"
+			referencedColumnNames="id" 
+			onDelete="CASCADE"
+			constraintName="fk_ships_games"/>
+		<addForeignKeyConstraint 
+			baseTableName="ships"
+			baseColumnNames="user_id" 
+			referencedTableName="users"
+			referencedColumnNames="id" 
+			onDelete="SET NULL"
+			constraintName="fk_ships_users"/>
+		<addForeignKeyConstraint 
+			baseTableName="shots"
+			baseColumnNames="user_id" 
+			referencedTableName="users"
+			referencedColumnNames="id" 
+			onDelete="SET NULL"
+			constraintName="fk_shots_users"/>
+		<addForeignKeyConstraint 
+			baseTableName="shots"
+			baseColumnNames="game_id" 
+			referencedTableName="games"
+			referencedColumnNames="id" 
+			onDelete="CASCADE"
+			constraintName="fk_shots_games"/>
+		<addForeignKeyConstraint 
+			baseTableName="shots"
+			baseColumnNames="cell_id" 
+			referencedTableName="cells"
+			referencedColumnNames="id" 
+			onDelete="CASCADE"
+			constraintName="fk_shots_cells"/>
+	</changeSet>
+
+</databaseChangeLog>

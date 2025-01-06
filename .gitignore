@@ -1,0 +1,61 @@
+# Java and Maven files
+target/
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+logs/
+*.out
+
+# Eclipse files
+.classpath
+.project
+.settings/
+
+# IntelliJ IDEA files
+*.iml
+.idea/
+*.ipr
+*.iws
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+
+# Spring Boot-specific
+spring.log
+
+# Test outputs
+test-output/
+surefire-reports/
+
+# IDE generated files (optional, for cross-editor projects)
+.vscode/
+*.code-workspace
+# Файлы, специфичные для IDE или инструментов
+.factorypath
+.dbeaver
+META-INF/
+
+# Environment files
+.env
+.env.*
+!example.env
+
+# Configuration files (sensitive data)
+#application.yml
+#application.properties
+#application-*.yml
+#application-*.properties
+
+# Build tools
+.mvn/
