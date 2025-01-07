@@ -9,4 +9,5 @@ import com.solomyuri.game_service.model.entity.Ship;
 public interface ShipMapper {
 	
     Ship dtoToEntity(ShipDto dto);
+    ShipDto entityToDto(Ship dto);
 }

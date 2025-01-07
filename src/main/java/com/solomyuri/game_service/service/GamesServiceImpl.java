@@ -18,10 +18,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -59,12 +56,36 @@ public class GamesServiceImpl implements GamesService {
 		return new CreateGameResponse(userGame.getId());
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public Game getFullGame(UUID gameId, JwtAuthenticationToken token) {
+		User user = getUserFromToken(token);
+		checkGameByUser(user, gameId);
+
+		Game game = gamesRepository.findById(gameId).orElseThrow(() -> {
+			log.warn("Game with id {} not found", gameId);
+			return new ApplicationException("Game not found", HttpStatus.NOT_FOUND);
+		});
+
+		gamesRepository.findWithCells(gameId);
+		gamesRepository.findWithShips(gameId);
+
+		return game;
+	}
+
 	private User getUserFromToken(JwtAuthenticationToken token) {
 		String username = (String) token.getToken().getClaims().get("preferred_username");
 		return usersRepository.findByUsername(username).orElseThrow(() -> {
 			log.warn("User with username {} not found", username);
 			return new ApplicationException("User not found", HttpStatus.NOT_FOUND);
 		});
+	}
+
+	private void checkGameByUser(User user, UUID gameId) {
+		if (Objects.isNull(user.getCurrentGame()) || !gameId.equals(user.getCurrentGame().getId())) {
+			log.warn("User with username {} have not game with id: {}", user.getUsername(), gameId);
+			throw new ApplicationException("Game not found", HttpStatus.NOT_FOUND);
+		}
 	}
 
 	private void setShipsAndCells(Game game, Map<String, Cell> cellsMap) {
