@@ -72,7 +72,7 @@
 				<constraints nullable="false"/>
 			</column>
 			<column name="user_id" type="UUID">
-				<constraints nullable="false"/>
+				<constraints nullable="true"/>
 			</column>
 			<column name="cell_id" type="UUID">
 				<constraints nullable="false"/>

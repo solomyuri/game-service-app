@@ -18,4 +18,8 @@ public interface GamesRepository extends JpaRepository<Game, UUID> {
     @EntityGraph(attributePaths = "ships.cells")
     @Query("select g from Game g where g.id = :gameId")
     Game findWithShips(UUID gameId);
+
+    @EntityGraph(attributePaths = "shots")
+    @Query("select g from Game g where g.id = :gameId")
+    Game findWithShots(UUID gameId);
 }

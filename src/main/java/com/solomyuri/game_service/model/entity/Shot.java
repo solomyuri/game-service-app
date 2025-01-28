@@ -2,8 +2,7 @@ package com.solomyuri.game_service.model.entity;
 
 import com.solomyuri.game_service.enums.ShotResult;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -11,6 +10,9 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "shots")
 public class Shot extends BaseEntity {
 
@@ -19,12 +21,15 @@ public class Shot extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(name = "number")
+    Integer number;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "result", nullable = false)
     ShotResult result;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = true)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
