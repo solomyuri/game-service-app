@@ -62,7 +62,7 @@ public class GamesWebSocketHandler extends TextWebSocketHandler {
 
         if (gameService.isWinner(game, Optional.of(game.getOwner()))) {
             shotResponse.setGameOver(new ShotWsResponse.GameOver(true));
-            session.getAttributes().put(WINNER, Optional.empty());
+            session.getAttributes().put(WINNER, Optional.of(game.getOwner()));
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(shotResponse)));
             session.close();
         } else {

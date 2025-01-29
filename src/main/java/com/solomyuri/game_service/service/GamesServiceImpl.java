@@ -106,9 +106,12 @@ public class GamesServiceImpl implements GamesService {
 
 			Shot currentShot = createAndSetShot(game, targetCell, shotNumber++, null);
 			shots.add(0, currentShot);
+			String targetCoordinate = targetCell.getX() + targetCell.getY();
 			response.getUserCellsOpen().add(cellMapper.entityToFullDto(targetCell));
 			response.getEnemyShots().add(shotMapper.entityToDto(currentShot));
-
+			shotCells.put(targetCoordinate, targetCell);
+			openedCells.put(targetCoordinate, targetCell);
+			closedCells.remove(targetCoordinate);
 			switch (currentShot.getResult()) {
 				case DESTROY -> {
 					isHasStrike = false;
@@ -116,8 +119,6 @@ public class GamesServiceImpl implements GamesService {
 				}
 				case STRIKE -> {
 					isHasStrike = true;
-					closedCells.remove(targetCell);
-					openedCells.put(targetCell.getX() + targetCell.getY(), targetCell);
 				}
 				default -> {
 					game.setCurrentShooter(game.getOwner());
@@ -461,13 +462,13 @@ public class GamesServiceImpl implements GamesService {
 
 		do {
 			target = Constants.NUMBER_TO_X.get(startX - i++) + y;
-		} while (shotCells.containsValue(target));
+		} while (shotCells.containsKey(target) || !closedCells.containsKey(target));
 
-		if (!closedCells.containsValue(target)) {
+		if (!closedCells.containsKey(target)) {
 			i = 1;
 			do {
 				target = Constants.NUMBER_TO_X.get(startX + i++) + y;
-			} while (shotCells.containsValue(target));
+			} while (shotCells.containsKey(target));
 		}
 
 		return closedCells.get(target);
@@ -481,13 +482,13 @@ public class GamesServiceImpl implements GamesService {
 
 		do {
 			target = x + (startY - i++);
-		} while (shotCells.containsValue(target));
+		} while (shotCells.containsKey(target) || !closedCells.containsKey(target));
 
-		if (!closedCells.containsValue(target)) {
+		if (!closedCells.containsKey(target)) {
 			i = 1;
 			do {
 				target = x + (startY + i++);
-			} while (shotCells.containsValue(target));
+			} while (shotCells.containsKey(target));
 		}
 
 		return closedCells.get(target);
