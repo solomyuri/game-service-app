@@ -5,6 +5,7 @@ import com.solomyuri.game_service.exception.ApplicationException;
 import com.solomyuri.game_service.model.entity.Cell;
 import com.solomyuri.game_service.model.entity.Game;
 import com.solomyuri.game_service.model.entity.Ship;
+import com.solomyuri.game_service.util.AppUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -36,18 +37,12 @@ public class ShipsGeneratorImpl implements ShipsGenerator {
     private Ship generateShip(Map<String, Cell> availableCells, int number, ShipType type, Game game) {
         Optional<Ship> shipOptional = Optional.empty();
         Ship ship = Ship.builder().number(number).type(type).game(game).build();
-        Random random = new Random();
         int attempts = 0;
 
         while (shipOptional.isEmpty() && attempts < 100) {
 
-            Cell firstCell = availableCells.values().stream()
-                    .skip(random.nextInt(availableCells.size()))
-                    .findFirst()
-                    .orElseThrow(() ->
-                            new ApplicationException("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR));
-
-            boolean isHorizontal = random.nextBoolean();
+            Cell firstCell = AppUtil.getRandomByAvailable(availableCells);
+            boolean isHorizontal = AppUtil.getRandomBoolean();
             int front = isHorizontal ? X_TO_NUMBER.get(firstCell.getX()) : Integer.parseInt(firstCell.getY());
             int side = isHorizontal ? Integer.parseInt(firstCell.getY()) : X_TO_NUMBER.get(firstCell.getX());
             log.debug("isHorizontal: {}, front: {}, side: {}", isHorizontal, front, side);

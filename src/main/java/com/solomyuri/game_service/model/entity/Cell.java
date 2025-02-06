@@ -2,6 +2,7 @@ package com.solomyuri.game_service.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate
 @Table(name = "cells")
 public class Cell extends BaseEntity {
 
@@ -58,5 +60,9 @@ public class Cell extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(x, y, user);
+    }
+
+    public String getCoordinate() {
+        return x + y;
     }
 }

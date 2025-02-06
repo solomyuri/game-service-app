@@ -7,5 +7,5 @@ import com.solomyuri.game_service.model.dto.response.HomeResponse;
 
 public interface UsersService {
 
-	HomeResponse getUserByToken(JwtAuthenticationToken token, Pageable pageable);
+    HomeResponse getUserByToken(JwtAuthenticationToken token, Pageable pageable);
 }
