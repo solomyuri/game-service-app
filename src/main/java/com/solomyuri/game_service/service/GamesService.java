@@ -13,11 +13,16 @@ import java.util.UUID;
 
 public interface GamesService {
 
-	CreateGameResponse createGame(CreateGameRequest request, JwtAuthenticationToken token);
-	Game getFullGame(UUID gameId, JwtAuthenticationToken token);
-	void invokeShotsByMachine(Game game, ShotWsResponse response);
-	void invokeShotsByUser(Game game, CellDto targetCellDto, ShotWsResponse response);
-	boolean isWinner(Game game, Optional<User> userOpt);
-	void gameFinishing(Game game, Optional<User> winner);
+    CreateGameResponse createGame(CreateGameRequest request, JwtAuthenticationToken token);
+
+    Game getFullGame(UUID gameId, JwtAuthenticationToken token);
+
+    void invokeShotsByMachine(Game game, ShotWsResponse response);
+
+    void invokeShotsByUser(Game game, CellDto targetCellDto, ShotWsResponse response);
+
+    boolean isWinner(Game game, Optional<User> userOpt);
+
+    void gameFinishing(Game game, Optional<User> winner);
 
 }
