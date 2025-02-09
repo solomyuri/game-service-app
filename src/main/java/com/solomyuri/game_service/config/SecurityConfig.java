@@ -1,6 +1,9 @@
 package com.solomyuri.game_service.config;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Bean;
@@ -24,37 +27,44 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SecurityConfig {
 
-	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http, AuthErrorHandler entryPoint) throws Exception {
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http, AuthErrorHandler entryPoint) throws Exception {
 
-		http.oauth2ResourceServer(
-				oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
+	http.oauth2ResourceServer(
+	        oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
-		http.authorizeHttpRequests(auth -> auth.anyRequest().hasAuthority("game-service-user"));
+	http.authorizeHttpRequests(auth -> auth.anyRequest().hasAuthority("game-service-user"));
 
-		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.csrf(AbstractHttpConfigurer::disable);
-		
-		http.exceptionHandling(
-				exception -> exception.authenticationEntryPoint(entryPoint).accessDeniedHandler(entryPoint));
+	http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+	        .csrf(AbstractHttpConfigurer::disable);
 
-		return http.build();
-	}
+	http.exceptionHandling(
+	        exception -> exception.authenticationEntryPoint(entryPoint).accessDeniedHandler(entryPoint));
 
-	@Bean
-	JwtAuthenticationConverter jwtAuthenticationConverter() {
+	return http.build();
+    }
 
-		var jwtAuthenticationConverter = new JwtAuthenticationConverter();
-		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(this::extractAuthorities);
+    @Bean
+    JwtAuthenticationConverter jwtAuthenticationConverter() {
 
-		return jwtAuthenticationConverter;
-	}
+	var jwtAuthenticationConverter = new JwtAuthenticationConverter();
+	jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(this::extractAuthorities);
 
-	@SuppressWarnings("unchecked")
-	private Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
+	return jwtAuthenticationConverter;
+    }
 
-		return ((Collection<String>) jwt.getClaimAsMap("realm_access").get("roles")).stream()
-				.map(SimpleGrantedAuthority::new)
-				.collect(Collectors.toList());
-	}
+    @SuppressWarnings("unchecked")
+    private Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
+
+	return Optional.ofNullable(jwt.getClaimAsMap("resource_access"))
+	        .map(Map::values)
+	        .stream()
+	        .flatMap(Collection::stream)
+	        .map(clientAccess -> ((Map<String, Collection<String>>) clientAccess).get("roles"))
+	        .filter(Objects::nonNull)
+	        .flatMap(Collection::stream)
+	        .map(SimpleGrantedAuthority::new)
+	        .collect(Collectors.toList());
+    }
+
 }
