@@ -89,6 +89,7 @@ public class GamesWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         UUID gameId = gameIdFromSession(session);
         Game game = activeGames.get(gameId);
