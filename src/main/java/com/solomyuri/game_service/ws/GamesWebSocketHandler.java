@@ -1,21 +1,12 @@
 package com.solomyuri.game_service.ws;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.solomyuri.game_service.mapper.GameMapper;
-import com.solomyuri.game_service.model.dto.CellDto;
-import com.solomyuri.game_service.model.dto.ErrorResponse;
-import com.solomyuri.game_service.model.dto.GameFullDto;
-import com.solomyuri.game_service.model.dto.response.GameResponse;
-import com.solomyuri.game_service.model.dto.response.ShotWsResponse;
-import com.solomyuri.game_service.model.entity.Game;
-import com.solomyuri.game_service.model.entity.User;
-import com.solomyuri.game_service.service.GamesService;
-
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -25,13 +16,22 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.solomyuri.game_service.mapper.GameMapper;
+import com.solomyuri.game_service.model.dto.CellDto;
+import com.solomyuri.game_service.model.dto.ErrorResponse;
+import com.solomyuri.game_service.model.dto.GameFullDto;
+import com.solomyuri.game_service.model.dto.response.GameResponse;
+import com.solomyuri.game_service.model.dto.response.ShotWsResponse;
+import com.solomyuri.game_service.model.entity.Game;
+import com.solomyuri.game_service.model.entity.User;
+import com.solomyuri.game_service.service.interfaces.GamesService;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j

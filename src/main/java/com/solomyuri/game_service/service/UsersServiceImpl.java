@@ -23,6 +23,7 @@ import com.solomyuri.game_service.model.dto.response.HomeResponse;
 import com.solomyuri.game_service.model.dto.sso_client.UserInfoResponse;
 import com.solomyuri.game_service.model.entity.User;
 import com.solomyuri.game_service.repository.UsersRepository;
+import com.solomyuri.game_service.service.interfaces.UsersService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
