@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.solomyuri.game_service.config.properties.SsoClientProperties;
 import com.solomyuri.game_service.exception.ApplicationException;
+import com.solomyuri.game_service.model.dto.sso_client.EditUserRequest;
 import com.solomyuri.game_service.model.dto.sso_client.SsoClientError;
 import com.solomyuri.game_service.model.dto.sso_client.UserInfoResponse;
 
@@ -56,6 +57,24 @@ public class SsoClientImpl implements SsoClient {
 		        return Mono.empty();
 	            } else {
 		        return handleErrorResponse(response, HttpMethod.DELETE.name(), ssoProperties.getUsersPath());
+	            }
+	        })
+	        .onErrorResume(err -> Mono.error(err))
+	        .block();
+    }
+    
+    @Override
+    public void editUser(String username, EditUserRequest request) {
+	webClient.put()
+	        .uri(uriBuilder -> uriBuilder.path(ssoProperties.getUsersPath())
+	                .queryParam(USERNAME, username)
+	                .build())
+	        .bodyValue(request)
+	        .exchangeToMono(response -> {
+	            if (response.statusCode().is2xxSuccessful()) {
+		        return Mono.empty();
+	            } else {
+		        return handleErrorResponse(response, HttpMethod.PUT.name(), ssoProperties.getUsersPath());
 	            }
 	        })
 	        .onErrorResume(err -> Mono.error(err))

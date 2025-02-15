@@ -5,6 +5,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -35,7 +36,7 @@ public class UsersController {
     }
     
     @PatchMapping
-    public ResponseEntity<UserDto> updateUser(JwtAuthenticationToken token, UpdateUserRequest request) {
+    public ResponseEntity<UserDto> updateUser(JwtAuthenticationToken token, @Validated UpdateUserRequest request) {
 	
 	return ResponseEntity.ok(usersService.updateUser(token, request));
     }
