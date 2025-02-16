@@ -47,7 +47,7 @@ public class UsersServiceImpl implements UsersService {
 	    return usersRepository.save(User.builder().username(username).build());
 	});
 
-	return new HomeResponse(userMapper.userToDto(userEntity));
+	return new HomeResponse(userMapper.toDto(userEntity));
     }
     
     @Override
@@ -61,7 +61,7 @@ public class UsersServiceImpl implements UsersService {
 	    ssoClient.editUser(userForUpdate.getUsername(), editUserRequest);
 	}
 
-	return userMapper.userToDto(userForUpdate);
+	return userMapper.toDto(userForUpdate);
     }
     
     @Override
