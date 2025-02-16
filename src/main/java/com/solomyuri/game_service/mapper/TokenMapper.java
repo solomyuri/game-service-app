@@ -17,10 +17,7 @@ public interface TokenMapper {
 		return TokenModel.builder()
 				.username((String) tokenAttributes.get("preferred_username"))
 				.roles(getRoles(token.getToken()))
-				.email((String) tokenAttributes.get("email"))
-				.emailVerified((boolean) tokenAttributes.get("email_verified"))
 				.build();
-
 	}
 
 	@SuppressWarnings("unchecked")

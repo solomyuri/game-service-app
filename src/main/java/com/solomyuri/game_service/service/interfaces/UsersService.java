@@ -1,4 +1,4 @@
-package com.solomyuri.game_service.service;
+package com.solomyuri.game_service.service.interfaces;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;

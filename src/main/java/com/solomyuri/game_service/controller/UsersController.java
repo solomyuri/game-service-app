@@ -5,16 +5,17 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.solomyuri.game_service.model.dto.UserDto;
 import com.solomyuri.game_service.model.dto.request.UpdateUserRequest;
 import com.solomyuri.game_service.model.dto.response.HomeResponse;
-import com.solomyuri.game_service.service.UsersService;
+import com.solomyuri.game_service.service.interfaces.UsersService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,14 +35,14 @@ public class UsersController {
         return ResponseEntity.ok(usersService.getUserByToken(token, pageable));
     }
     
-    @PutMapping()
-    public ResponseEntity<UserDto> updateUser(JwtAuthenticationToken token, UpdateUserRequest request) {
+    @PatchMapping
+    public ResponseEntity<UserDto> updateUser(JwtAuthenticationToken token, @Validated UpdateUserRequest request) {
 	
 	return ResponseEntity.ok(usersService.updateUser(token, request));
     }
     
-    @DeleteMapping()
-    public ResponseEntity<?> deleteUser(JwtAuthenticationToken token) {
+    @DeleteMapping
+    public ResponseEntity<String> deleteUser(JwtAuthenticationToken token) {
 	usersService.deleteUser(token);
 	return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

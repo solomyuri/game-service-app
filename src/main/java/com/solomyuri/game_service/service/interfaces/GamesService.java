@@ -1,4 +1,4 @@
-package com.solomyuri.game_service.service;
+package com.solomyuri.game_service.service.interfaces;
 
 import com.solomyuri.game_service.model.dto.CellDto;
 import com.solomyuri.game_service.model.dto.request.CreateGameRequest;

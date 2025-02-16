@@ -1,5 +1,28 @@
 package com.solomyuri.game_service.service;
 
+import static com.solomyuri.game_service.enums.ShotResult.DESTROY;
+import static com.solomyuri.game_service.enums.ShotResult.MISS;
+import static com.solomyuri.game_service.enums.ShotResult.STRIKE;
+
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.solomyuri.game_service.enums.ShotResult;
 import com.solomyuri.game_service.exception.ApplicationException;
 import com.solomyuri.game_service.mapper.CellMapper;
@@ -10,23 +33,23 @@ import com.solomyuri.game_service.model.dto.CellFullDto;
 import com.solomyuri.game_service.model.dto.request.CreateGameRequest;
 import com.solomyuri.game_service.model.dto.response.CreateGameResponse;
 import com.solomyuri.game_service.model.dto.response.ShotWsResponse;
-import com.solomyuri.game_service.model.entity.*;
-import com.solomyuri.game_service.repository.*;
+import com.solomyuri.game_service.model.entity.Cell;
+import com.solomyuri.game_service.model.entity.Game;
+import com.solomyuri.game_service.model.entity.Ship;
+import com.solomyuri.game_service.model.entity.Shot;
+import com.solomyuri.game_service.model.entity.User;
+import com.solomyuri.game_service.repository.CellsRepository;
+import com.solomyuri.game_service.repository.GamesRepository;
+import com.solomyuri.game_service.repository.ShipsRepository;
+import com.solomyuri.game_service.repository.ShotsRepository;
+import com.solomyuri.game_service.repository.UsersRepository;
+import com.solomyuri.game_service.service.interfaces.GamesService;
+import com.solomyuri.game_service.service.interfaces.ShipsGenerator;
 import com.solomyuri.game_service.util.AppUtil;
 import com.solomyuri.game_service.util.Constants;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static com.solomyuri.game_service.enums.ShotResult.*;
 
 @Service
 @Slf4j

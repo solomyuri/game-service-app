@@ -1,18 +1,29 @@
 package com.solomyuri.game_service.service;
 
+import static com.solomyuri.game_service.util.Constants.AREA_SIZE;
+import static com.solomyuri.game_service.util.Constants.NUMBER_TO_X;
+import static com.solomyuri.game_service.util.Constants.REMOVED_CELLS;
+import static com.solomyuri.game_service.util.Constants.SHIP_CELLS;
+import static com.solomyuri.game_service.util.Constants.X_TO_NUMBER;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+
 import com.solomyuri.game_service.enums.ShipType;
 import com.solomyuri.game_service.exception.ApplicationException;
 import com.solomyuri.game_service.model.entity.Cell;
 import com.solomyuri.game_service.model.entity.Game;
 import com.solomyuri.game_service.model.entity.Ship;
+import com.solomyuri.game_service.service.interfaces.ShipsGenerator;
 import com.solomyuri.game_service.util.AppUtil;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-
-import java.util.*;
-
-import static com.solomyuri.game_service.util.Constants.*;
 
 @Component
 @Slf4j

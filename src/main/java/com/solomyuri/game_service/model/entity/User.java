@@ -5,6 +5,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,9 +18,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-@Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate
+@Table(name = "users")
 public class User extends BaseEntity {
 
 	@Id
@@ -40,6 +43,13 @@ public class User extends BaseEntity {
 	@Column(name = "lose_count")
 	@Builder.Default
 	private Integer loseCount = 0;
+	
+	@Column(name = "email")
+	private String email;
+	
+	@Column(name = "email_verified")
+	@Builder.Default
+	private Boolean emailVerified = false;
 
 	@OneToOne(cascade = {CascadeType.MERGE}, mappedBy = "owner", fetch = FetchType.LAZY)
 	private Game currentGame;

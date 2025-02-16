@@ -2,6 +2,8 @@ package com.solomyuri.game_service.service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,9 +22,11 @@ import com.solomyuri.game_service.model.dto.TokenModel;
 import com.solomyuri.game_service.model.dto.UserDto;
 import com.solomyuri.game_service.model.dto.request.UpdateUserRequest;
 import com.solomyuri.game_service.model.dto.response.HomeResponse;
+import com.solomyuri.game_service.model.dto.sso_client.EditUserRequest;
 import com.solomyuri.game_service.model.dto.sso_client.UserInfoResponse;
 import com.solomyuri.game_service.model.entity.User;
 import com.solomyuri.game_service.repository.UsersRepository;
+import com.solomyuri.game_service.service.interfaces.UsersService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,8 +57,14 @@ public class UsersServiceImpl implements UsersService {
     @Override
     @Transactional
     public UserDto updateUser(JwtAuthenticationToken token, UpdateUserRequest request) {
+
 	User userForUpdate = findForUpdateOrDelete(tokenMapper.jwtToModel(token).username());
-	
+
+	if (updateField(userForUpdate::setEmail, userForUpdate.getEmail(), request.getEmail())) {
+	    EditUserRequest editUserRequest = EditUserRequest.builder().email(request.getEmail().orElse(null)).build();
+	    ssoClient.editUser(userForUpdate.getUsername(), editUserRequest);
+	}
+
 	return userMapper.userToDto(userForUpdate);
     }
     
@@ -100,6 +110,17 @@ public class UsersServiceImpl implements UsersService {
 	if (Objects.isNull(userInfo) || userInfo.isEmpty() ||
 	        !userInfo.get(0).getUsername().equals(username) || !userInfo.get(0).isEnabled()) {
 	    throw new ApplicationException("User not found", HttpStatus.NOT_FOUND);
+	}
+    }
+
+    private <T, V> boolean updateField(Consumer<V> consumer, T field, Optional<V> valueOpt) {
+	if (Objects.isNull(valueOpt) ||
+	        (Objects.isNull(field) && valueOpt.isEmpty()) ||
+	        (Objects.nonNull(field) && valueOpt.isPresent() && Objects.equals(field, valueOpt.get()))) {
+	    return false;
+	} else {
+	    consumer.accept(valueOpt.orElse(null));
+	    return true;
 	}
     }
 
