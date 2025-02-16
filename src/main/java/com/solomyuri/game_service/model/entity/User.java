@@ -7,7 +7,15 @@ import java.util.UUID;
 
 import org.hibernate.annotations.DynamicUpdate;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,68 +32,80 @@ import lombok.Setter;
 @Table(name = "users")
 public class User extends BaseEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	@Column(name = "id")
-	private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id")
+    private UUID id;
 
-	@Column(name = "username")
-	private String username;
+    @Column(name = "username")
+    private String username;
 
-	@Column(name = "game_count")
-	@Builder.Default
-	private Integer gameCount = 0;
+    @Column(name = "game_count")
+    @Builder.Default
+    private Integer gameCount = 0;
 
-	@Column(name = "win_count")
-	@Builder.Default
-	private Integer winCount = 0;
+    @Column(name = "win_count")
+    @Builder.Default
+    private Integer winCount = 0;
 
-	@Column(name = "lose_count")
-	@Builder.Default
-	private Integer loseCount = 0;
-	
-	@Column(name = "email")
-	private String email;
-	
-	@Column(name = "email_verified")
-	@Builder.Default
-	private Boolean emailVerified = false;
-	
-	@Column(name = "is_admin")
-	@Builder.Default
-	private Boolean isAdmin = false;
-	
-	@Column(name = "is_blocked")
-	@Builder.Default
-	private Boolean isBlocked = false;
+    @Column(name = "lose_count")
+    @Builder.Default
+    private Integer loseCount = 0;
 
-	@OneToOne(cascade = {CascadeType.MERGE}, mappedBy = "owner", fetch = FetchType.LAZY)
-	private Game currentGame;
+    @Column(name = "email")
+    private String email;
 
-	@OneToMany(cascade = {CascadeType.MERGE}, mappedBy = "user", fetch = FetchType.LAZY)
-	@Builder.Default
-	private Set<Cell> cells = new HashSet<>();
+    @Column(name = "email_verified")
+    @Builder.Default
+    private Boolean emailVerified = false;
 
-	@OneToMany(cascade = {CascadeType.MERGE}, mappedBy = "user", fetch = FetchType.LAZY)
-	@Builder.Default
-	private Set<Ship> ships = new HashSet<>();
+    @Column(name = "is_admin")
+    @Builder.Default
+    private Boolean isAdmin = false;
 
-	@OneToMany(cascade = {CascadeType.MERGE}, mappedBy = "user", fetch = FetchType.LAZY)
-	@Builder.Default
-	private Set<Shot> shots = new HashSet<>();
+    @Column(name = "is_blocked")
+    @Builder.Default
+    private Boolean isBlocked = false;
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		User user = (User) o;
-		return Objects.equals(username, user.username);
-	}
+    @OneToMany(cascade = { CascadeType.MERGE }, mappedBy = "owner", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Game> currentGame = new HashSet<>();
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(username);
-	}
+    @OneToMany(cascade = { CascadeType.MERGE }, mappedBy = "user", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Cell> cells = new HashSet<>();
+
+    @OneToMany(cascade = { CascadeType.MERGE }, mappedBy = "user", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Ship> ships = new HashSet<>();
+
+    @OneToMany(cascade = { CascadeType.MERGE }, mappedBy = "user", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Shot> shots = new HashSet<>();
+
+    public Game getCurrentGame() {
+	return currentGame.stream().findFirst().orElse(null);
+    }
+
+    public void setCurrentGame(Game game) {
+	if (!currentGame.isEmpty())
+	    currentGame.clear();
+	currentGame.add(game);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+	if (this == o)
+	    return true;
+	if (o == null || getClass() != o.getClass())
+	    return false;
+	User user = (User) o;
+	return Objects.equals(username, user.username);
+    }
+
+    @Override
+    public int hashCode() {
+	return Objects.hash(username);
+    }
+
 }

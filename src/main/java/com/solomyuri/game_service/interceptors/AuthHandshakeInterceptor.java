@@ -14,11 +14,11 @@ public class AuthHandshakeInterceptor implements HandshakeInterceptor {
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                    WebSocketHandler wsHandler, Map<String, Object> attributes) {
-        if (request.getHeaders().get(HttpHeaders.AUTHORIZATION).isEmpty()) {
-            response.setStatusCode(HttpStatus.UNAUTHORIZED);
-            return false;
-        }
-        return true;
+	if (request.getHeaders().get(HttpHeaders.AUTHORIZATION).isEmpty()) {
+	    response.setStatusCode(HttpStatus.UNAUTHORIZED);
+	    return false;
+	}
+	return true;
     }
 
     @Override

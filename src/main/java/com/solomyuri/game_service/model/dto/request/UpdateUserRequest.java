@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 public class UpdateUserRequest {
- 
+
     private Optional<@Email @NotNull String> email;
-    
+
 }

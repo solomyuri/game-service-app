@@ -32,15 +32,15 @@ public class UsersController {
     public ResponseEntity<HomeResponse> home(JwtAuthenticationToken token,
                                              @PageableDefault(sort = "username") Pageable pageable) {
 
-        return ResponseEntity.ok(usersService.getUserByToken(token, pageable));
+	return ResponseEntity.ok(usersService.getUserByToken(token));
     }
-    
+
     @PatchMapping
     public ResponseEntity<UserDto> updateUser(JwtAuthenticationToken token, @Validated UpdateUserRequest request) {
-	
+
 	return ResponseEntity.ok(usersService.updateUser(token, request));
     }
-    
+
     @DeleteMapping
     public ResponseEntity<String> deleteUser(JwtAuthenticationToken token) {
 	usersService.deleteUser(token);

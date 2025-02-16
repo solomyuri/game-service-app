@@ -38,25 +38,25 @@ public class Ship extends BaseEntity {
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
-    @OneToMany(mappedBy = "ship", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
+    @OneToMany(mappedBy = "ship", fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
     @Builder.Default
     private Set<Cell> cells = new HashSet<>();
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		Ship ship = (Ship) o;
-		return Objects.equals(number, ship.number) &&
-		        Objects.equals(type, ship.type) &&
-		        Objects.equals(game, ship.game) &&
-		        Objects.equals(user, ship.user);
-	}
+    @Override
+    public boolean equals(Object o) {
+	if (this == o)
+	    return true;
+	if (o == null || getClass() != o.getClass())
+	    return false;
+	Ship ship = (Ship) o;
+	return Objects.equals(number, ship.number) &&
+	        Objects.equals(type, ship.type) &&
+	        Objects.equals(game, ship.game) &&
+	        Objects.equals(user, ship.user);
+    }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, type, game, user);
+	return Objects.hash(number, type, game, user);
     }
 }

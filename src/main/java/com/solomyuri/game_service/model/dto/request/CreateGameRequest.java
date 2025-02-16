@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public class CreateGameRequest {
-	@Valid
-	private GameDto game;
+    @Valid
+    private GameDto game;
 
 }

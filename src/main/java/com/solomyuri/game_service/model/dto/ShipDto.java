@@ -11,11 +11,11 @@ import java.util.Set;
 @Data
 public class ShipDto {
 
-	@NotNull(message = "type must be not null")
-	private ShipType type;
-	@NotNull(message = "number must be not null")
-	private Integer number;
-	@Valid
-	@NotEmpty(message = "ships must be not empty")
-	private Set<CellDto> cells;
+    @NotNull(message = "type must be not null")
+    private ShipType type;
+    @NotNull(message = "number must be not null")
+    private Integer number;
+    @Valid
+    @NotEmpty(message = "ships must be not empty")
+    private Set<CellDto> cells;
 }

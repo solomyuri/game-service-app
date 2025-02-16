@@ -15,7 +15,7 @@ public class GameResponse {
 
     @JsonCreator
     public static GameResponse createResponse(GameFullDto game) {
-        return new GameResponse(game);
+	return new GameResponse(game);
     }
 
 }

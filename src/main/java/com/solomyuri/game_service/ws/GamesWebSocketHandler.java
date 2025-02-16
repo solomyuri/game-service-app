@@ -45,20 +45,20 @@ public class GamesWebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final String WINNER = "WINNER";
     private final ErrorResponse forbiddenResponse = ErrorResponse.builder()
-	    .errorCode(403)
-	    .errorDescription(HttpStatus.FORBIDDEN.getReasonPhrase())
-	    .build();
+            .errorCode(403)
+            .errorDescription(HttpStatus.FORBIDDEN.getReasonPhrase())
+            .build();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        UUID gameId = gameIdFromSession(session);
-        JwtAuthenticationToken jwt = (JwtAuthenticationToken) session.getPrincipal();
+	UUID gameId = gameIdFromSession(session);
+	JwtAuthenticationToken jwt = (JwtAuthenticationToken) session.getPrincipal();
 	Game game = activeGames.computeIfAbsent(gameId, k -> gameService.getFullGame(gameId, jwt));
-        checkGameOwner(game.getOwner().getUsername(), jwt, session);
-        GameFullDto gameFullDto = gameMapper.gameToFullDto(game);
-        GameResponse response = GameResponse.createResponse(gameFullDto);
-        session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
-        ShotWsResponse shotResponse = new ShotWsResponse();
+	checkGameOwner(game.getOwner().getUsername(), jwt, session);
+	GameFullDto gameFullDto = gameMapper.gameToFullDto(game);
+	GameResponse response = GameResponse.createResponse(gameFullDto);
+	session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
+	ShotWsResponse shotResponse = new ShotWsResponse();
 	shotMachine(game, shotResponse, session);
 	if (!shotResponse.getEnemyShots().isEmpty())
 	    session.sendMessage(new TextMessage(objectMapper.writeValueAsString(shotResponse)));
@@ -66,50 +66,50 @@ public class GamesWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        String payload = message.getPayload();
-        CellDto cellDto = objectMapper.readValue(payload, CellDto.class);
-        
-        if (!isValidMessage(cellDto, session)) 
-            return;
-        
-        UUID gameId = gameIdFromSession(session);
-        Game game = activeGames.get(gameId);
-        ShotWsResponse shotResponse = new ShotWsResponse();
-        gameService.invokeShotsByUser(game, cellDto, shotResponse);
+	String payload = message.getPayload();
+	CellDto cellDto = objectMapper.readValue(payload, CellDto.class);
 
-        if (gameService.isWinner(game, Optional.of(game.getOwner()))) {
-            shotResponse.setGameOver(new ShotWsResponse.GameOver(true));
-            session.getAttributes().put(WINNER, Optional.of(game.getOwner()));
-            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(shotResponse)));
-            session.close();
-        } else {
-            shotMachine(game, shotResponse, session);
-            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(shotResponse)));
-        }
+	if (!isValidMessage(cellDto, session))
+	    return;
+
+	UUID gameId = gameIdFromSession(session);
+	Game game = activeGames.get(gameId);
+	ShotWsResponse shotResponse = new ShotWsResponse();
+	gameService.invokeShotsByUser(game, cellDto, shotResponse);
+
+	if (gameService.isWinner(game, Optional.of(game.getOwner()))) {
+	    shotResponse.setGameOver(new ShotWsResponse.GameOver(true));
+	    session.getAttributes().put(WINNER, Optional.of(game.getOwner()));
+	    session.sendMessage(new TextMessage(objectMapper.writeValueAsString(shotResponse)));
+	    session.close();
+	} else {
+	    shotMachine(game, shotResponse, session);
+	    session.sendMessage(new TextMessage(objectMapper.writeValueAsString(shotResponse)));
+	}
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        UUID gameId = gameIdFromSession(session);
-        Game game = activeGames.get(gameId);
-        Optional<User> winner = (Optional<User>) session.getAttributes().get(WINNER);
-        
-        if (Objects.nonNull(winner)) {
+	UUID gameId = gameIdFromSession(session);
+	Game game = activeGames.get(gameId);
+	Optional<User> winner = (Optional<User>) session.getAttributes().get(WINNER);
+
+	if (Objects.nonNull(winner)) {
 	    gameService.gameFinishing(game, winner);
 	    activeGames.remove(gameId);
-        }
+	}
     }
-    
+
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        log.error(exception.getMessage(), exception);
-        session.close(CloseStatus.SERVER_ERROR);
+	log.error(exception.getMessage(), exception);
+	session.close(CloseStatus.SERVER_ERROR);
     }
 
     private UUID gameIdFromSession(WebSocketSession session) {
-        String path = session.getUri().getPath();
-        return UUID.fromString(path.substring(path.lastIndexOf("/") + 1));
+	String path = session.getUri().getPath();
+	return UUID.fromString(path.substring(path.lastIndexOf("/") + 1));
     }
 
     @SneakyThrows
@@ -125,7 +125,7 @@ public class GamesWebSocketHandler extends TextWebSocketHandler {
 	    }
 	}
     }
-    
+
     @SneakyThrows
     private boolean isValidMessage(CellDto cellDto, WebSocketSession session) {
 	Set<ConstraintViolation<CellDto>> violations = validator.validate(cellDto);
@@ -137,7 +137,7 @@ public class GamesWebSocketHandler extends TextWebSocketHandler {
 	}
 	return true;
     }
-    
+
     @SneakyThrows
     private void checkGameOwner(String owner, JwtAuthenticationToken token, WebSocketSession session) {
 	String username = (String) token.getToken().getClaims().get("preferred_username");
@@ -150,4 +150,3 @@ public class GamesWebSocketHandler extends TextWebSocketHandler {
     }
 
 }
-

@@ -28,53 +28,56 @@ import java.util.Objects;
 @Slf4j
 public class GlobalExceptionHandler {
 
-	private final Map<Class<? extends Exception>, HttpStatus> exceptionToStatus;
+    private final Map<Class<? extends Exception>, HttpStatus> exceptionToStatus;
 
-	public GlobalExceptionHandler() {
-		exceptionToStatus = Map.of(
-				InternalException.class, HttpStatus.INTERNAL_SERVER_ERROR,
-				ValidationException.class, HttpStatus.BAD_REQUEST,
-				ConstraintViolationException.class, HttpStatus.BAD_REQUEST,
-				BindException.class, HttpStatus.BAD_REQUEST,
-				HttpMessageNotReadableException.class, HttpStatus.BAD_REQUEST,
-				PropertyReferenceException.class, HttpStatus.BAD_REQUEST,
-				WebClientRequestException.class, HttpStatus.BAD_GATEWAY,
-				NoResourceFoundException.class, HttpStatus.NOT_FOUND
-		);
+    public GlobalExceptionHandler() {
+	exceptionToStatus = Map.of(
+	        InternalException.class, HttpStatus.INTERNAL_SERVER_ERROR,
+	        ValidationException.class, HttpStatus.BAD_REQUEST,
+	        ConstraintViolationException.class, HttpStatus.BAD_REQUEST,
+	        BindException.class, HttpStatus.BAD_REQUEST,
+	        HttpMessageNotReadableException.class, HttpStatus.BAD_REQUEST,
+	        PropertyReferenceException.class, HttpStatus.BAD_REQUEST,
+	        WebClientRequestException.class, HttpStatus.BAD_GATEWAY,
+	        NoResourceFoundException.class, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception exception) {
+	log.error("An error has occurred", exception);
+
+	HttpStatus httpStatus;
+	String message = null;
+
+	if (exception instanceof ResponseStatusException responseStatusException) {
+	    httpStatus = HttpStatus.valueOf(responseStatusException.getStatusCode().value());
+	} else if (exception instanceof ApplicationException applicationException) {
+	    httpStatus = applicationException.getStatus();
+	} else if (exception instanceof MethodArgumentNotValidException notValidException) {
+	    httpStatus = HttpStatus.BAD_REQUEST;
+	    message = notValidException.getBindingResult()
+	            .getAllErrors()
+	            .stream()
+	            .map(DefaultMessageSourceResolvable::getDefaultMessage)
+	            .findFirst()
+	            .orElse("Bad request");
+	} else {
+	    httpStatus = exceptionToStatus.getOrDefault(exception.getClass(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorResponse> handleException(Exception exception) {
-		log.error("An error has occurred", exception);
+	if (message == null)
+	    message = Objects.equals(httpStatus, HttpStatus.BAD_GATEWAY)
+	            ? "External system error"
+	            : exception.getMessage();
 
-		HttpStatus httpStatus;
-		String message = null;
+	ErrorResponse errorResponse = ErrorResponse.builder()
+	        .errorCode(httpStatus.value())
+	        .errorDescription(message)
+	        .build();
 
-		if (exception instanceof ResponseStatusException responseStatusException) {
-			httpStatus = HttpStatus.valueOf(responseStatusException.getStatusCode().value());
-		} else if (exception instanceof ApplicationException applicationException) {
-			httpStatus = applicationException.getStatus();
-		} else if (exception instanceof MethodArgumentNotValidException notValidException) {
-			httpStatus = HttpStatus.BAD_REQUEST;
-			message = notValidException.getBindingResult().getAllErrors().stream()
-					.map(DefaultMessageSourceResolvable::getDefaultMessage).findFirst().orElse("Bad request");
-		} else {
-			httpStatus = exceptionToStatus.getOrDefault(exception.getClass(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-		if (message == null)
-		 message = Objects.equals(httpStatus, HttpStatus.BAD_GATEWAY)
-				? "External system error"
-				: exception.getMessage();
-
-		ErrorResponse errorResponse = ErrorResponse.builder()
-				.errorCode(httpStatus.value())
-				.errorDescription(message)
-				.build();
-
-		return ResponseEntity.status(httpStatus)
-				.contentType(MediaType.APPLICATION_JSON)
-				.body(errorResponse);
-	}
+	return ResponseEntity.status(httpStatus)
+	        .contentType(MediaType.APPLICATION_JSON)
+	        .body(errorResponse);
+    }
 
 }

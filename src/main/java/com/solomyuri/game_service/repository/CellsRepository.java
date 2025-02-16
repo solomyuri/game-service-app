@@ -11,7 +11,7 @@ import com.solomyuri.game_service.model.entity.Cell;
 
 @Repository
 public interface CellsRepository extends JpaRepository<Cell, UUID> {
-    
+
     @Modifying
     @Query("update Cell c set c.isOpen = true, c.lastUpdatedDate = CURRENT_TIMESTAMP where c.id = :cellId")
     void updateForOpen(UUID cellId);
