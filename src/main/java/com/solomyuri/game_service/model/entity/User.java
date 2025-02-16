@@ -50,6 +50,14 @@ public class User extends BaseEntity {
 	@Column(name = "email_verified")
 	@Builder.Default
 	private Boolean emailVerified = false;
+	
+	@Column(name = "is_admin")
+	@Builder.Default
+	private Boolean isAdmin = false;
+	
+	@Column(name = "is_blocked")
+	@Builder.Default
+	private Boolean isBlocked = false;
 
 	@OneToOne(cascade = {CascadeType.MERGE}, mappedBy = "owner", fetch = FetchType.LAZY)
 	private Game currentGame;

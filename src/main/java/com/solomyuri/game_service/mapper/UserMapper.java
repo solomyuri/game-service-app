@@ -6,9 +6,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface UserMapper {
+public interface UserMapper extends EntityPagingMapper<User, UserDto> {
 
-	@Mapping(target = "currentGame", expression = "java(user.getCurrentGame() != null ? user.getCurrentGame().getId() : null)")
-	UserDto userToDto(User user);
+    @Mapping(target = "currentGame", source = "currentGame.id")
+    UserDto toDto(User user);
 
 }

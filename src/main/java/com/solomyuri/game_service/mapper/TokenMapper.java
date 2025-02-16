@@ -2,6 +2,8 @@ package com.solomyuri.game_service.mapper;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -21,12 +23,15 @@ public interface TokenMapper {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<String> getRoles(Jwt jwt) {
-		Map<String, Object> realmAccess = jwt.getClaimAsMap("realm_access");
-		if (realmAccess != null && realmAccess.containsKey("roles")) {
-			return ((List<String>) realmAccess.get("roles")).stream().toList();
-		}
-		return List.of();
+	private Set<String> getRoles(Jwt jwt) {
+	    Map<String, Object> resourceAccess = jwt.getClaimAsMap("resource_access");
+	    if (resourceAccess != null && resourceAccess.containsKey("game-service-app")) {
+		return ((Map<String, List<String>>) resourceAccess.get("game-service-app"))
+		        .get("roles")
+		        .stream()
+		        .collect(Collectors.toSet());
+	    } else
+		return Set.of();
 	}
 
 }

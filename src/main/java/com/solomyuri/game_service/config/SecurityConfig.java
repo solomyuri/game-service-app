@@ -33,6 +33,7 @@ public class SecurityConfig {
 	http.oauth2ResourceServer(
 	        oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
+	http.authorizeHttpRequests(auth -> auth.requestMatchers("/v1/admin/**").hasAuthority("game-service-admin"));
 	http.authorizeHttpRequests(auth -> auth.anyRequest().hasAuthority("game-service-user"));
 
 	http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
