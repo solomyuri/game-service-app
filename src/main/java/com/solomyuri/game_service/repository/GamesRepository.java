@@ -25,7 +25,7 @@ public interface GamesRepository extends JpaRepository<Game, UUID> {
     @EntityGraph(attributePaths = "shots")
     @Query("select g from Game g where g.id = :gameId")
     Game findWithShots(UUID gameId);
-    
+
     @Modifying
     @Query("update Game g set g.currentShooter = :shooter, g.lastUpdatedDate = CURRENT_TIMESTAMP where g.id = :gameId")
     void updateShooter(UUID gameId, User shooter);

@@ -22,21 +22,23 @@ public class FilterExceptionHandler extends OncePerRequestFilter {
     private final GlobalExceptionHandler exceptionHandler;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException {
-        try {
-            filterChain.doFilter(request, response);
-        } catch (Exception e) {
-            ResponseEntity<ErrorResponse> responseEntity = exceptionHandler.handleException(e);
-            writeResponseEntity(responseEntity, response);
-        }
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws IOException {
+	try {
+	    filterChain.doFilter(request, response);
+	} catch (Exception e) {
+	    ResponseEntity<ErrorResponse> responseEntity = exceptionHandler.handleException(e);
+	    writeResponseEntity(responseEntity, response);
+	}
     }
 
-    private void writeResponseEntity(ResponseEntity<ErrorResponse> responseEntity, HttpServletResponse response) throws IOException {
-        PrintWriter out = response.getWriter();
-        ErrorResponse error = responseEntity.getBody();
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(responseEntity.getStatusCode().value());
-        out.print(mapper.writeValueAsString(error));
-        out.flush();
+    private void writeResponseEntity(ResponseEntity<ErrorResponse> responseEntity, HttpServletResponse response)
+            throws IOException {
+	PrintWriter out = response.getWriter();
+	ErrorResponse error = responseEntity.getBody();
+	response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+	response.setStatus(responseEntity.getStatusCode().value());
+	out.print(mapper.writeValueAsString(error));
+	out.flush();
     }
 }

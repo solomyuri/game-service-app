@@ -25,6 +25,6 @@ public class ShotWsResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class GameOver {
-        private Boolean isVictory;
+	private Boolean isVictory;
     }
 }

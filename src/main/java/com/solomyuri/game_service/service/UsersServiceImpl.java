@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -41,14 +40,14 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     @Transactional
-    public HomeResponse getUserByToken(JwtAuthenticationToken token, Pageable pageable) {
+    public HomeResponse getUserByToken(JwtAuthenticationToken token) {
 	String username = tokenMapper.jwtToModel(token).username();
-	
-	User user = usersRepository.findByUsername(username).orElseGet(() -> {
+
+	User user = usersRepository.findByUsernameWithGame(username).orElseGet(() -> {
 	    checkBeforeCreate(username);
 	    return usersRepository.save(User.builder().username(username).build());
 	});
-	
+
 	AppUtil.checkUserBlocked(user);
 
 	return new HomeResponse(userMapper.toDto(user));
@@ -68,7 +67,7 @@ public class UsersServiceImpl implements UsersService {
 
 	return userMapper.toDto(userForUpdate);
     }
-    
+
     @Override
     @Transactional
     public void deleteUser(JwtAuthenticationToken token) {
@@ -77,19 +76,19 @@ public class UsersServiceImpl implements UsersService {
 	ssoClient.deleteUser(userForDelete.getUsername());
 	usersRepository.deleteUser(userForDelete.getUsername());
     }
-    
+
     @Override
     @Transactional
     public User getUserForUpdate(String username) {
 
-	User user = usersRepository.findByUsername(username).orElseThrow(() -> {
+	User user = usersRepository.findForUpdate(username).orElseThrow(() -> {
 	    log.warn("User with username {} not found", username);
 	    return new ApplicationException(Constants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
 	});
-	
+
 	return user;
     }
-    
+
     private void checkBeforeCreate(String username) {
 	List<UserInfoResponse> userInfo = ssoClient.getUser(username);
 	if (Objects.isNull(userInfo) || userInfo.isEmpty() ||

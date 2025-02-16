@@ -14,13 +14,13 @@ public class WebSocketConfig implements WebSocketConfigurer {
     private final GamesWebSocketHandler gameWebSocketHandler;
 
     public WebSocketConfig(GamesWebSocketHandler gameWebSocketHandler) {
-        this.gameWebSocketHandler = gameWebSocketHandler;
+	this.gameWebSocketHandler = gameWebSocketHandler;
     }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(gameWebSocketHandler, "/v1/battleship/{gameId}")
-                .addInterceptors(new AuthHandshakeInterceptor())
-                .setAllowedOrigins("*");
+	registry.addHandler(gameWebSocketHandler, "/v1/battleship/{gameId}")
+	        .addInterceptors(new AuthHandshakeInterceptor())
+	        .setAllowedOrigins("*");
     }
 }

@@ -17,5 +17,5 @@ public class EditUserRequest {
     private String email;
     private Boolean emailVerified;
     private Boolean enabled;
-    
+
 }

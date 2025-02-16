@@ -17,13 +17,13 @@ import lombok.Setter;
 @Setter
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
-	
-	@Column(name = "created_date")
-	@CreatedDate
-	private Instant createdDate;
-	
-	@Column(name = "last_updated_date")
-	@LastModifiedDate
-	private Instant lastUpdatedDate;
+
+    @Column(name = "created_date")
+    @CreatedDate
+    private Instant createdDate;
+
+    @Column(name = "last_updated_date")
+    @LastModifiedDate
+    private Instant lastUpdatedDate;
 
 }

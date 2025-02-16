@@ -42,17 +42,17 @@ public class Shot extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        Shot shot = (Shot) o;
-        return Objects.equals(id, shot.id);
+	if (this == o)
+	    return true;
+	if (o == null || getClass() != o.getClass())
+	    return false;
+	Shot shot = (Shot) o;
+	return Objects.equals(id, shot.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+	return Objects.hash(id);
     }
 
 }

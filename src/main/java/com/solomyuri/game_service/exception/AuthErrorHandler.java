@@ -18,23 +18,25 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class AuthErrorHandler implements AuthenticationEntryPoint, AccessDeniedHandler {
 
-	private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException ex) throws IOException {
-        handleError(response, ex, HttpStatus.UNAUTHORIZED);
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException ex)
+            throws IOException {
+	handleError(response, ex, HttpStatus.UNAUTHORIZED);
     }
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException ex) throws IOException {
-        handleError(response, ex, HttpStatus.FORBIDDEN);
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException ex)
+            throws IOException {
+	handleError(response, ex, HttpStatus.FORBIDDEN);
     }
 
     private void handleError(HttpServletResponse response, Exception ex, HttpStatus status) throws IOException {
-        response.setStatus(status.value());
-        response.setContentType("application/json");
+	response.setStatus(status.value());
+	response.setContentType("application/json");
 
-        ErrorResponse errorResponse = new ErrorResponse(status.value(), ex.getMessage());
-        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+	ErrorResponse errorResponse = new ErrorResponse(status.value(), ex.getMessage());
+	response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 }

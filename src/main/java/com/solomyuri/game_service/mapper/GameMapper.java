@@ -31,31 +31,31 @@ public interface GameMapper {
     GameFullDto gameToFullDto(Game game);
 
     default Set<ShipDto> filterUserShips(Set<Ship> ships) {
-        return ships.stream()
-                .filter(ship -> Objects.nonNull(ship.getUser()))
-                .map(SHIP_MAPPER::entityToDto)
-                .collect(Collectors.toSet());
+	return ships.stream()
+	        .filter(ship -> Objects.nonNull(ship.getUser()))
+	        .map(SHIP_MAPPER::entityToDto)
+	        .collect(Collectors.toSet());
     }
 
     default Set<ShipDto> filterEnemyShipsOpened(Set<Ship> ships) {
-        return ships.stream()
-                .filter(ship -> Objects.isNull(ship.getUser()) && ship.getCells().stream().allMatch(Cell::getIsOpen))
-                .map(SHIP_MAPPER::entityToDto)
-                .collect(Collectors.toSet());
+	return ships.stream()
+	        .filter(ship -> Objects.isNull(ship.getUser()) && ship.getCells().stream().allMatch(Cell::getIsOpen))
+	        .map(SHIP_MAPPER::entityToDto)
+	        .collect(Collectors.toSet());
     }
 
     default Set<CellFullDto> filterUserCellsOpened(Set<Cell> cells) {
-        return cells.stream()
-                .filter(cell -> Objects.nonNull(cell.getUser()) && cell.getIsOpen())
-                .map(CELL_MAPPER::entityToFullDto)
-                .collect(Collectors.toSet());
+	return cells.stream()
+	        .filter(cell -> Objects.nonNull(cell.getUser()) && cell.getIsOpen())
+	        .map(CELL_MAPPER::entityToFullDto)
+	        .collect(Collectors.toSet());
     }
 
     default Set<CellFullDto> filterEnemyCellsOpened(Set<Cell> cells) {
-        return cells.stream()
-                .filter(cell -> Objects.isNull(cell.getUser()) && cell.getIsOpen())
-                .map(CELL_MAPPER::entityToFullDto)
-                .collect(Collectors.toSet());
+	return cells.stream()
+	        .filter(cell -> Objects.isNull(cell.getUser()) && cell.getIsOpen())
+	        .map(CELL_MAPPER::entityToFullDto)
+	        .collect(Collectors.toSet());
     }
 
 }

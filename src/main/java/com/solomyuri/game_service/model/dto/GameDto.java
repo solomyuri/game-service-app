@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class GameDto {
 
-	@Valid
-	@NotEmpty(message = "ships must be not empty")
-	private Set<ShipDto> ships;
+    @Valid
+    @NotEmpty(message = "ships must be not empty")
+    private Set<ShipDto> ships;
 }

@@ -22,46 +22,46 @@ import jakarta.persistence.EntityManagerFactory;
 @Configuration
 @EnableJpaAuditing
 @EnableJpaRepositories(
-		basePackages = "com.solomyuri.game_service.repository",
-		entityManagerFactoryRef = "gameServiceEntityManagerFactory",
-		transactionManagerRef = "gameServiceTransactionManager")
+                       basePackages = "com.solomyuri.game_service.repository",
+                       entityManagerFactoryRef = "gameServiceEntityManagerFactory",
+                       transactionManagerRef = "gameServiceTransactionManager")
 @EntityScan("com.solomyuri.game_service.model.entity")
 public class JpaConfig {
 
-	@Bean(name = "gameServiceDataSourceProperies")
-	@ConfigurationProperties("spring.datasource")
-	DataSourceProperties gameServiceDataSourceProperties() {
+    @Bean(name = "gameServiceDataSourceProperies")
+    @ConfigurationProperties("spring.datasource")
+    DataSourceProperties gameServiceDataSourceProperties() {
 
-		return new DataSourceProperties();
-	}
+	return new DataSourceProperties();
+    }
 
-	@Bean(name = "gameServiceDataSource")
-	@ConfigurationProperties(prefix = "spring.datasource.hikari")
-	DataSource gameServiceDataSource(DataSourceProperties gameServiceDataSourceProperies) {
+    @Bean(name = "gameServiceDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.hikari")
+    DataSource gameServiceDataSource(DataSourceProperties gameServiceDataSourceProperies) {
 
-		return gameServiceDataSourceProperies.initializeDataSourceBuilder().type(HikariDataSource.class).build();
-	}
+	return gameServiceDataSourceProperies.initializeDataSourceBuilder().type(HikariDataSource.class).build();
+    }
 
-	@Bean(name = "gameServiceEntityManagerFactory")
-	LocalContainerEntityManagerFactoryBean gameServiceEntityManagerFactory(EntityManagerFactoryBuilder builder,
-			DataSource gameServiceDataSource) {
+    @Bean(name = "gameServiceEntityManagerFactory")
+    LocalContainerEntityManagerFactoryBean gameServiceEntityManagerFactory(EntityManagerFactoryBuilder builder,
+                                                                           DataSource gameServiceDataSource) {
 
-		return builder.dataSource(gameServiceDataSource)
-				.packages("com.solomyuri.game_service.model.entity")
-				.persistenceUnit("gameServiceDataSource")
-				.build();
-	}
+	return builder.dataSource(gameServiceDataSource)
+	        .packages("com.solomyuri.game_service.model.entity")
+	        .persistenceUnit("gameServiceDataSource")
+	        .build();
+    }
 
-	@Bean(name = "gameServiceTransactionManager")
-	PlatformTransactionManager platformTransactionManager(EntityManagerFactory gameServiceEntityManagerFactory) {
+    @Bean(name = "gameServiceTransactionManager")
+    PlatformTransactionManager platformTransactionManager(EntityManagerFactory gameServiceEntityManagerFactory) {
 
-		return new JpaTransactionManager(gameServiceEntityManagerFactory);
-	}
+	return new JpaTransactionManager(gameServiceEntityManagerFactory);
+    }
 
-	@Bean
-	JdbcTemplate gameServiceJdbcTemplate(DataSource gameServiceDataSource) {
+    @Bean
+    JdbcTemplate gameServiceJdbcTemplate(DataSource gameServiceDataSource) {
 
-		return new JdbcTemplate(gameServiceDataSource);
-	}
+	return new JdbcTemplate(gameServiceDataSource);
+    }
 
 }

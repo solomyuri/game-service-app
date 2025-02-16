@@ -8,11 +8,11 @@ import lombok.Getter;
 @SuppressWarnings("serial")
 public class ApplicationException extends RuntimeException {
 
-	private final HttpStatus status;
+    private final HttpStatus status;
 
-	public ApplicationException(String message, HttpStatus status) {
-		super(message);
-		this.status = status;
-	}
+    public ApplicationException(String message, HttpStatus status) {
+	super(message);
+	this.status = status;
+    }
 
 }

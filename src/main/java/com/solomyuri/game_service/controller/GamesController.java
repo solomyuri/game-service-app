@@ -29,8 +29,8 @@ public class GamesController {
     @PostMapping("")
     public ResponseEntity<CreateGameResponse> createGame(@Validated @RequestBody CreateGameRequest request,
                                                          JwtAuthenticationToken authToken) {
-        gameValidator.validateGameRequest(request.getGame());
-        return new ResponseEntity<>(gamesService.createGame(request, authToken), HttpStatus.CREATED);
+	gameValidator.validateGameRequest(request.getGame());
+	return new ResponseEntity<>(gamesService.createGame(request, authToken), HttpStatus.CREATED);
     }
 
 }
