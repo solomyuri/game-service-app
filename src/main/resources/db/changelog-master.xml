@@ -8,5 +8,6 @@
     <include file="changelog/002_add_tables_cells_shots_ships.xml" relativeToChangelogFile="true"/>
     <include file="changelog/003_add_column_number_to_shots.xml" relativeToChangelogFile="true"/>
     <include file="changelog/004_add_email_columns_to_user.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/005_add_admin_columns_to_user.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
