@@ -3,6 +3,8 @@ package com.solomyuri.game_service.util;
 import com.solomyuri.game_service.exception.ApplicationException;
 import com.solomyuri.game_service.model.dto.PageDto;
 import com.solomyuri.game_service.model.entity.Cell;
+import com.solomyuri.game_service.model.entity.User;
+
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
 
@@ -25,5 +27,10 @@ public class AppUtil {
     
     public <T> HttpStatus getStatusByPage(PageDto<T> page) {
 	return page.totalElements() > page.content().size() ? HttpStatus.PARTIAL_CONTENT : HttpStatus.OK;
+    }
+    
+    public void checkUserBlocked(User user) {
+	if (user.getIsBlocked())
+	    throw new ApplicationException("User is blocked", HttpStatus.FORBIDDEN);
     }
 }

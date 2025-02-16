@@ -23,6 +23,7 @@ import com.solomyuri.game_service.model.dto.sso_client.UserInfoResponse;
 import com.solomyuri.game_service.model.entity.User;
 import com.solomyuri.game_service.repository.UsersRepository;
 import com.solomyuri.game_service.service.interfaces.UsersService;
+import com.solomyuri.game_service.util.AppUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,14 +43,16 @@ public class UsersServiceImpl implements UsersService {
     public HomeResponse getUserByToken(JwtAuthenticationToken token, Pageable pageable) {
 	String username = tokenMapper.jwtToModel(token).username();
 	
-	User userEntity = usersRepository.findByUsername(username).orElseGet(() -> {
+	User user = usersRepository.findByUsername(username).orElseGet(() -> {
 	    checkBeforeCreate(username);
 	    return usersRepository.save(User.builder().username(username).build());
 	});
+	
+	AppUtil.checkUserBlocked(user);
 
-	return new HomeResponse(userMapper.toDto(userEntity));
+	return new HomeResponse(userMapper.toDto(user));
     }
-    
+
     @Override
     @Transactional
     public UserDto updateUser(JwtAuthenticationToken token, UpdateUserRequest request) {
@@ -74,10 +77,14 @@ public class UsersServiceImpl implements UsersService {
     
     private User findForUpdateOrDelete(String username) {
 
-	return usersRepository.findByUsername(username).orElseThrow(() -> {
+	User user = usersRepository.findByUsername(username).orElseThrow(() -> {
 	    log.warn("User with username {} not found", username);
 	    return new ApplicationException("User not found", HttpStatus.NOT_FOUND);
 	});
+	
+	AppUtil.checkUserBlocked(user);
+	
+	return user;
     }
     
     private void checkBeforeCreate(String username) {
