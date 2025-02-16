@@ -5,7 +5,9 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.solomyuri.game_service.model.dto.PageDto;
@@ -33,5 +35,10 @@ public class AdminController {
                                                      SearchUsersRequest request) {
 	PageDto<UserDto> page = adminService.getUsers(request, pageable);
 	return ResponseEntity.status(AppUtil.getStatusByPage(page)).body(page);
+    }
+    
+    @PostMapping("users/blocking")
+    public ResponseEntity<String> blocking(@RequestParam String username) {
+	return ResponseEntity.ok(adminService.blocking(username));
     }
 }

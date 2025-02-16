@@ -9,4 +9,7 @@ import com.solomyuri.game_service.model.dto.request.SearchUsersRequest;
 public interface AdminService {
 
     PageDto<UserDto> getUsers(SearchUsersRequest request, Pageable pageable);
+    
+    String blocking(String username);
+    
 }

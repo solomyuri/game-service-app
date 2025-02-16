@@ -98,7 +98,7 @@ public class GamesServiceImpl implements GamesService {
 
 	Game game = gamesRepository.findById(gameId).orElseThrow(() -> {
 	    log.warn("Game with id {} not found", gameId);
-	    return new ApplicationException("Game not found", HttpStatus.NOT_FOUND);
+	    return new ApplicationException(Constants.GAME_NOT_FOUND, HttpStatus.NOT_FOUND);
 	});
 
 	gamesRepository.findWithCells(gameId);
@@ -214,7 +214,7 @@ public class GamesServiceImpl implements GamesService {
 	
 	User user = usersRepository.findByUsername(username).orElseThrow(() -> {
 	    log.warn("User with username {} not found", username);
-	    return new ApplicationException("User not found", HttpStatus.NOT_FOUND);
+	    return new ApplicationException(Constants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
 	});
 	
 	AppUtil.checkUserBlocked(user);
@@ -226,7 +226,7 @@ public class GamesServiceImpl implements GamesService {
 	
 	if (Objects.isNull(user.getCurrentGame()) || !gameId.equals(user.getCurrentGame().getId())) {
 	    log.warn("User with username {} have not game with id: {}", user.getUsername(), gameId);
-	    throw new ApplicationException("Game not found", HttpStatus.NOT_FOUND);
+	    throw new ApplicationException(Constants.GAME_NOT_FOUND, HttpStatus.NOT_FOUND);
 	}
 	
 	AppUtil.checkUserBlocked(user);

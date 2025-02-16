@@ -24,6 +24,7 @@ import com.solomyuri.game_service.model.entity.User;
 import com.solomyuri.game_service.repository.UsersRepository;
 import com.solomyuri.game_service.service.interfaces.UsersService;
 import com.solomyuri.game_service.util.AppUtil;
+import com.solomyuri.game_service.util.Constants;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +58,8 @@ public class UsersServiceImpl implements UsersService {
     @Transactional
     public UserDto updateUser(JwtAuthenticationToken token, UpdateUserRequest request) {
 
-	User userForUpdate = findForUpdateOrDelete(tokenMapper.jwtToModel(token).username());
+	User userForUpdate = getUserForUpdate(tokenMapper.jwtToModel(token).username());
+	AppUtil.checkUserBlocked(userForUpdate);
 
 	if (updateField(userForUpdate::setEmail, userForUpdate.getEmail(), request.getEmail())) {
 	    EditUserRequest editUserRequest = EditUserRequest.builder().email(request.getEmail().orElse(null)).build();
@@ -70,19 +72,20 @@ public class UsersServiceImpl implements UsersService {
     @Override
     @Transactional
     public void deleteUser(JwtAuthenticationToken token) {
-	User userForDelete = findForUpdateOrDelete(tokenMapper.jwtToModel(token).username());
+	User userForDelete = getUserForUpdate(tokenMapper.jwtToModel(token).username());
+	AppUtil.checkUserBlocked(userForDelete);
 	ssoClient.deleteUser(userForDelete.getUsername());
 	usersRepository.deleteUser(userForDelete.getUsername());
     }
     
-    private User findForUpdateOrDelete(String username) {
+    @Override
+    @Transactional
+    public User getUserForUpdate(String username) {
 
 	User user = usersRepository.findByUsername(username).orElseThrow(() -> {
 	    log.warn("User with username {} not found", username);
-	    return new ApplicationException("User not found", HttpStatus.NOT_FOUND);
+	    return new ApplicationException(Constants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
 	});
-	
-	AppUtil.checkUserBlocked(user);
 	
 	return user;
     }
@@ -91,7 +94,7 @@ public class UsersServiceImpl implements UsersService {
 	List<UserInfoResponse> userInfo = ssoClient.getUser(username);
 	if (Objects.isNull(userInfo) || userInfo.isEmpty() ||
 	        !userInfo.get(0).getUsername().equals(username) || !userInfo.get(0).isEnabled()) {
-	    throw new ApplicationException("User not found", HttpStatus.NOT_FOUND);
+	    throw new ApplicationException(Constants.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
 	}
     }
 
