@@ -9,13 +9,14 @@ import com.solomyuri.game_service.model.entity.Game;
 import com.solomyuri.game_service.model.entity.Ship;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface GameMapper {
 
     ShipMapper SHIP_MAPPER = Mappers.getMapper(ShipMapper.class);

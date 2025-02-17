@@ -6,8 +6,9 @@ import org.mapstruct.Mapper;
 import com.solomyuri.game_service.model.dto.CellDto;
 import com.solomyuri.game_service.model.entity.Cell;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CellMapper {
 
     Cell dtoToEntity(CellDto dto);
